@@ -7,24 +7,87 @@ import java.util.Set;
 public class SetManager {
   private static final Scanner sc = new Scanner(System.in);
 
-  public static void showMenu() {
-    System.out.print("Ingresa el tamaño del conjunto universal: ");
+  // Colores y estilos
+  private static final String RESET = "\033[0m";
+  private static final String BOLD = "\033[1m";
+  private static final String BLUE = "\033[34m";
+  private static final String GREEN = "\033[32m";
+  private static final String CYAN = "\033[36m";
+  private static final String YELLOW = "\033[33m";
+  private static final String MAGENTA = "\033[35m";
+  private static final String RED = "\033[31m";
+  private static final String PURPLE = "\033[35m";
 
+  public static void main(String[] args) {
+    showMenu();
+  }
+
+  public static void showMenu() {
+    printTitle();
+
+    System.out.print(BOLD + BLUE + "Ingresa el tamaño del conjunto universal: " + RESET);
     int universalSetSize = sc.nextInt();
     Set<Object> universalSet = createUniversalSet(universalSetSize);
 
-    System.out.println("\nEl conjunto universal es: \n");
-    System.out.println(universalSet);
+    while (true) {
+      printMenuOptions();
+      int option = sc.nextInt();
+      sc.nextLine();
 
-    System.out.println("\nVerificación de pertenencia al conjunto universal: \n");
-    checkUniversalMembership(universalSet);
+      switch (option) {
+        case 1:
+          printSection("Conjunto Universal", GREEN);
+          printTable(universalSet);
+          break;
+        case 2:
+          printSection("Verificación de Pertenencia", YELLOW);
+          checkUniversalMembership(universalSet);
+          break;
+        case 3:
+          printSection("Clasificación de Subconjuntos", MAGENTA);
+          classifySubsets(universalSet);
+          break;
+        case 4:
+          printSection("Conjunto Potencia", RED);
+          Set<Set<Object>> powerSet = getPowerSet(universalSet);
+          printTable(powerSet);
+          break;
+        case 5:
+          System.out.println(BOLD + PURPLE + "¡Gracias por usar el programa! 👋" + RESET);
+          return;
+        default:
+          System.out.println(RED + "Opción no válida. Intenta de nuevo." + RESET);
+      }
+    }
+  }
 
-    System.out.println("\nClasificación de subconjuntos: \n");
-    classifySubsets(universalSet);
+  private static void printMenuOptions() {
+    System.out.println("\n" + BOLD + "📋 MENÚ DE OPCIONES" + RESET);
+    System.out.println("─────────────────────────────────────────");
+    System.out.println(BLUE + "1. Mostrar Conjunto Universal");
+    System.out.println(YELLOW + "2. Verificar Pertenencia");
+    System.out.println(MAGENTA + "3. Clasificar Subconjuntos");
+    System.out.println(RED + "4. Mostrar Conjunto Potencia");
+    System.out.println(PURPLE + "5. Salir");
+    System.out.print(BOLD + "Elige una opción: " + RESET);
+  }
 
-    System.out.println("\nEl conjunto potencia es: \n");
-    Set<Set<Object>> powerSet = getPowerSet(universalSet);
-    powerSet.forEach(System.out::println);
+  private static void printTitle() {
+    System.out.println(BOLD + "    📌 TEORIA DE CONJUNTOS 📌" + RESET);
+    System.out.println("═════════════════════════════════════════");
+  }
+
+  private static void printSection(String title, String color) {
+    System.out.println("\n" + color + BOLD + "🔹 " + title + " 🔹" + RESET);
+    System.out.println("─────────────────────────────────────────");
+  }
+
+  private static void printTable(Set<?> set) {
+    System.out.println(CYAN + "┌───────────────────────────┐" + RESET);
+    for (Object element : set) {
+      System.out.printf(CYAN + "│ %-25s │\n" + RESET, element);
+    }
+    System.out.println(CYAN + "└───────────────────────────┘" + RESET);
   }
 
   private static Set<Object> createUniversalSet(int size) {
@@ -49,7 +112,6 @@ public class SetManager {
         universalSet.add(input);
       }
     }
-
     return universalSet;
   }
 
@@ -69,12 +131,12 @@ public class SetManager {
 
         if (simpleElements.containsAll(subset)) {
           if (subset.size() < simpleElements.size()) {
-            System.out.println(subset + " ⊂ U"); // subconjuto propio
+            System.out.println(CYAN + subset + " ⊂ U" + RESET); // subconjunto propio
           } else {
-            System.out.println(subset + " ⊆ U"); // subconjunto no propio
+            System.out.println(CYAN + subset + " ⊆ U" + RESET); // subconjunto no propio
           }
         } else {
-          System.out.println(subset + " ⊈ U"); // no es subconjunto
+          System.out.println(RED + subset + " ⊈ U" + RESET); // no es subconjunto
         }
       }
     });
@@ -82,7 +144,7 @@ public class SetManager {
 
   private static void checkUniversalMembership(Set<Object> universalSet) {
     universalSet.forEach(element -> {
-      System.out.println(element + " ∈ U");
+      System.out.println(CYAN + element + " ∈ U" + RESET);
     });
   }
 
